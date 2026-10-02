@@ -1,0 +1,18 @@
+{
+  "name": "dsh (DeepSeek Harness) — OpenCode Zen + Z.AI",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:22",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "containerEnv": {
+    // Headless dsh has no approval channel; full access is the sane default
+    // inside a disposable Codespace. Set to "workspace-write" to tighten.
+    "DSH_PERMISSION_MODE": "danger-full-access"
+  },
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "customizations": {
+    "codespaces": {
+      "openFiles": ["README.md"]
+    }
+  }
+}
