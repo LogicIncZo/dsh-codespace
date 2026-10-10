@@ -4,7 +4,7 @@ set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo "==> Installing dsh (npm @deepseek-ai/dsh)"
-npm install -g @deepseek-ai/dsh
+npm install -g @deepseek-ai/dsh@0.2.1-alpha.1
 dsh --version
 
 mkdir -p "$HOME/.dsh" "$HOME/.local/bin"
